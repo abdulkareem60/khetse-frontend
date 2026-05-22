@@ -1,0 +1,708 @@
+/* ============================================================
+   KhetSe Global Responsive System
+   Single source of truth for all breakpoints & utilities
+   ============================================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── CSS Custom Properties ── */
+:root {
+  --ks-green-950: #052912;
+  --ks-green-900: #0A3D1F;
+  --ks-green-800: #14532D;
+  --ks-green-700: #166534;
+  --ks-green-600: #16A34A;
+  --ks-green-500: #22C55E;
+  --ks-green-400: #4ADE80;
+  --ks-green-100: #DCFCE7;
+  --ks-green-50:  #F0FDF4;
+  --ks-gold:      #D4A017;
+  --ks-surface:   #FFFFFF;
+  --ks-surface-2: #F8FAFC;
+  --ks-surface-3: #F1F5F9;
+  --ks-border:    #E2E8F0;
+  --ks-border-2:  #CBD5E1;
+  --ks-text-1:    #0F172A;
+  --ks-text-2:    #334155;
+  --ks-text-3:    #64748B;
+  --ks-text-4:    #94A3B8;
+  --ks-shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --ks-shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --ks-shadow-lg: 0 10px 30px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06);
+  --ks-radius-sm: 8px;
+  --ks-radius-md: 12px;
+  --ks-radius-lg: 16px;
+  --ks-font:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --ks-mono:      'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Fluid spacing */
+  --ks-page-px: clamp(16px, 4vw, 32px);
+  --ks-page-py: clamp(16px, 3vw, 28px);
+  --ks-gap:     clamp(12px, 2vw, 20px);
+  --ks-gap-sm:  clamp(8px, 1.5vw, 14px);
+  --ks-gap-lg:  clamp(16px, 3vw, 32px);
+
+  /* Breakpoints (reference only) */
+  --bp-xs:  480px;
+  --bp-sm:  640px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+  --bp-xl:  1280px;
+  --bp-2xl: 1536px;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  font-family: var(--ks-font);
+  background: var(--ks-surface-2);
+  color: var(--ks-text-1);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, video, iframe { max-width: 100%; height: auto; display: block; }
+button { cursor: pointer; font-family: var(--ks-font); }
+a { text-decoration: none; }
+
+/* ── Scrollbar ── */
+* { scrollbar-width: thin; scrollbar-color: var(--ks-border) transparent; }
+*::-webkit-scrollbar { width: 5px; height: 5px; }
+*::-webkit-scrollbar-thumb { background: var(--ks-border-2); border-radius: 4px; }
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+
+.ks-page {
+  padding: var(--ks-page-py) var(--ks-page-px);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ks-page-full {
+  padding: var(--ks-page-py) var(--ks-page-px);
+  width: 100%;
+}
+
+/* Fluid responsive grid */
+.ks-grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: var(--ks-gap);
+}
+
+.ks-grid-1 { display: grid; grid-template-columns: 1fr; gap: var(--ks-gap); }
+.ks-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--ks-gap); }
+.ks-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--ks-gap); }
+.ks-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--ks-gap); }
+.ks-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--ks-gap); }
+
+/* ============================================================
+   NAVBAR — Main site
+   ============================================================ */
+
+.ks-nav-main {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.ks-nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--ks-page-px);
+  height: 60px;
+}
+
+.ks-nav-logo { font-size: clamp(20px, 3vw, 28px); font-weight: 700; text-decoration: none; }
+.ks-nav-links { display: flex; align-items: center; gap: clamp(16px, 2.5vw, 40px); }
+.ks-nav-link  { font-size: clamp(13px, 1.5vw, 15px); font-weight: 500; text-decoration: none; white-space: nowrap; }
+.ks-nav-auth  { display: flex; align-items: center; gap: clamp(8px, 1.5vw, 16px); }
+
+/* Mobile hamburger — hidden on desktop */
+.ks-nav-hamburger { display: none; background: none; border: none; padding: 8px; }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.ks-card {
+  background: var(--ks-surface);
+  border: 1px solid var(--ks-border);
+  border-radius: var(--ks-radius-lg);
+  box-shadow: var(--ks-shadow-sm);
+  overflow: hidden;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.ks-card:hover { box-shadow: var(--ks-shadow-md); }
+.ks-card-p { padding: clamp(16px, 3vw, 24px); }
+
+/* Product card */
+.ks-product-card {
+  background: var(--ks-surface);
+  border: 1px solid var(--ks-border);
+  border-radius: var(--ks-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ks-shadow-sm);
+  transition: transform 0.18s, box-shadow 0.18s;
+  display: flex;
+  flex-direction: column;
+}
+.ks-product-card:hover { transform: translateY(-3px); box-shadow: var(--ks-shadow-md); }
+.ks-product-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.ks-product-body { padding: clamp(12px, 2vw, 18px); flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+/* Stat card */
+.ks-stat-card {
+  background: var(--ks-surface);
+  border: 1px solid var(--ks-border);
+  border-radius: var(--ks-radius-lg);
+  padding: clamp(16px, 2.5vw, 22px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--ks-shadow-sm);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.ks-stat-card:hover { box-shadow: var(--ks-shadow-md); transform: translateY(-1px); }
+.ks-stat-value { font-size: clamp(20px, 3vw, 28px); font-weight: 700; letter-spacing: -0.5px; font-family: var(--ks-mono); }
+.ks-stat-label { font-size: clamp(12px, 1.3vw, 13px); color: var(--ks-text-3); }
+
+/* ============================================================
+   TABLES — Responsive scrollable
+   ============================================================ */
+
+.ks-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--ks-radius-lg);
+  border: 1px solid var(--ks-border);
+  box-shadow: var(--ks-shadow-sm);
+  background: var(--ks-surface);
+}
+
+.ks-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Prevents ultra-squished tables */
+}
+
+.ks-table-container thead tr { background: var(--ks-surface-2); }
+.ks-table-container thead th {
+  padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 16px);
+  text-align: left;
+  font-size: clamp(10px, 1.1vw, 11px);
+  font-weight: 700;
+  color: var(--ks-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-bottom: 1px solid var(--ks-border);
+  white-space: nowrap;
+}
+.ks-table-container tbody tr {
+  border-bottom: 1px solid var(--ks-surface-3);
+  transition: background 0.10s;
+}
+.ks-table-container tbody tr:last-child { border-bottom: none; }
+.ks-table-container tbody tr:hover { background: #FAFCFF; }
+.ks-table-container tbody td {
+  padding: clamp(10px, 1.5vw, 13px) clamp(10px, 2vw, 16px);
+  font-size: clamp(12px, 1.3vw, 13.5px);
+  color: var(--ks-text-2);
+  vertical-align: middle;
+}
+
+/* Card-table for mobile (converts table rows to cards) */
+@media (max-width: 640px) {
+  .ks-table-mobile-cards table,
+  .ks-table-mobile-cards thead,
+  .ks-table-mobile-cards tbody,
+  .ks-table-mobile-cards th,
+  .ks-table-mobile-cards td,
+  .ks-table-mobile-cards tr { display: block; }
+  .ks-table-mobile-cards thead { display: none; }
+  .ks-table-mobile-cards tbody tr {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: var(--ks-radius-md);
+    margin-bottom: 10px;
+    padding: 14px;
+    min-width: unset;
+  }
+  .ks-table-mobile-cards tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--ks-surface-3);
+    font-size: 13px;
+  }
+  .ks-table-mobile-cards tbody td:last-child { border-bottom: none; padding-bottom: 0; }
+  .ks-table-mobile-cards tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--ks-text-3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+  .ks-table-container { overflow-x: unset; border: none; box-shadow: none; background: transparent; }
+  .ks-table-container table { min-width: unset; }
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+
+.ks-form { width: 100%; }
+.ks-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--ks-gap); }
+.ks-form-full { grid-column: 1 / -1; }
+.ks-field { display: flex; flex-direction: column; gap: 6px; }
+.ks-label { font-size: clamp(12px, 1.3vw, 13px); font-weight: 600; color: var(--ks-text-2); }
+.ks-input {
+  padding: clamp(9px, 1.5vw, 11px) clamp(10px, 2vw, 14px);
+  border: 1.5px solid var(--ks-border);
+  border-radius: var(--ks-radius-sm);
+  font-size: clamp(13px, 1.5vw, 14px);
+  font-family: var(--ks-font);
+  color: var(--ks-text-1);
+  background: var(--ks-surface);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ks-input:focus { border-color: var(--ks-green-500); box-shadow: 0 0 0 3px rgba(34,197,94,0.10); }
+.ks-input::placeholder { color: var(--ks-text-4); }
+.ks-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748B' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+.ks-textarea { resize: vertical; min-height: 80px; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.ks-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: clamp(8px, 1.5vw, 10px) clamp(14px, 2.5vw, 20px);
+  border-radius: var(--ks-radius-sm);
+  font-size: clamp(12px, 1.3vw, 14px);
+  font-weight: 600;
+  font-family: var(--ks-font);
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.ks-btn-primary { background: var(--ks-green-600); color: #fff; border-color: var(--ks-green-600); }
+.ks-btn-primary:hover { background: var(--ks-green-700); box-shadow: 0 3px 10px rgba(22,163,74,0.28); }
+.ks-btn-outline { background: transparent; color: var(--ks-green-700); border-color: var(--ks-green-500); }
+.ks-btn-outline:hover { background: var(--ks-green-50); }
+.ks-btn-ghost  { background: var(--ks-surface-3); color: var(--ks-text-2); border-color: var(--ks-border); }
+.ks-btn-ghost:hover { background: var(--ks-surface-2); }
+.ks-btn-danger { background: #FEF2F2; color: #DC2626; border-color: #FECACA; }
+.ks-btn-danger:hover { background: #FEE2E2; }
+.ks-btn-sm { padding: 5px 12px; font-size: 12px; }
+.ks-btn-lg { padding: clamp(12px, 2vw, 16px) clamp(24px, 4vw, 36px); font-size: clamp(14px, 1.5vw, 17px); border-radius: 100px; }
+.ks-btn-full { width: 100%; }
+.ks-btn-pill { border-radius: 100px; }
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.ks-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 100px; font-size: clamp(10px, 1.2vw, 11.5px); font-weight: 600; white-space: nowrap; }
+.ks-b-green  { background: var(--ks-green-50);  color: #15803D; }
+.ks-b-red    { background: #FEF2F2; color: #DC2626; }
+.ks-b-yellow { background: #FFFBEB; color: #D97706; }
+.ks-b-blue   { background: #EFF6FF; color: #2563EB; }
+.ks-b-purple { background: #F5F3FF; color: #7C3AED; }
+.ks-b-slate  { background: var(--ks-surface-3); color: var(--ks-text-3); }
+
+/* ============================================================
+   SECTION & PAGE HEADERS
+   ============================================================ */
+
+.ks-page-header {
+  margin-bottom: clamp(16px, 3vw, 26px);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ks-page-title { font-size: clamp(18px, 3vw, 22px); font-weight: 700; color: var(--ks-text-1); letter-spacing: -0.4px; }
+.ks-page-sub   { font-size: clamp(12px, 1.5vw, 13.5px); color: var(--ks-text-3); margin-top: 3px; }
+.ks-section-title { font-size: clamp(14px, 1.8vw, 16px); font-weight: 700; color: var(--ks-text-1); }
+
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+
+.ks-filter-bar {
+  display: flex;
+  gap: clamp(6px, 1.2vw, 10px);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: clamp(14px, 2.5vw, 20px);
+}
+.ks-filter-tab {
+  padding: clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 16px);
+  border-radius: var(--ks-radius-sm);
+  border: 1.5px solid var(--ks-border);
+  background: var(--ks-surface);
+  color: var(--ks-text-3);
+  font-size: clamp(11px, 1.2vw, 13px);
+  font-weight: 600;
+  font-family: var(--ks-font);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.13s;
+}
+.ks-filter-tab:hover { border-color: var(--ks-border-2); color: var(--ks-text-2); }
+.ks-filter-tab.active { background: var(--ks-green-700); border-color: var(--ks-green-700); color: #fff; }
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+
+.ks-avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+.ks-avatar-sm  { width: 28px; height: 28px; font-size: 11px; }
+.ks-avatar-md  { width: 36px; height: 36px; font-size: 13px; }
+.ks-avatar-lg  { width: 48px; height: 48px; font-size: 17px; }
+.ks-avatar-xl  { width: 64px; height: 64px; font-size: 22px; }
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+
+.ks-alert { display: flex; align-items: center; gap: 9px; padding: clamp(10px, 1.8vw, 13px) clamp(12px, 2.2vw, 16px); border-radius: var(--ks-radius-sm); font-size: clamp(12px, 1.4vw, 13.5px); font-weight: 500; margin-bottom: clamp(14px, 2.5vw, 20px); border: 1px solid; }
+.ks-alert-ok   { background: var(--ks-green-50);  color: #15803D; border-color: #BBF7D0; }
+.ks-alert-err  { background: #FEF2F2; color: #DC2626; border-color: #FECACA; }
+.ks-alert-warn { background: #FFFBEB; color: #D97706; border-color: #FDE68A; }
+
+/* ============================================================
+   EMPTY & LOADING STATES
+   ============================================================ */
+
+.ks-empty  { text-align: center; padding: clamp(40px, 8vw, 64px) 24px; }
+.ks-empty-icon  { font-size: clamp(32px, 5vw, 44px); margin-bottom: 12px; opacity: 0.5; }
+.ks-empty-title { font-size: clamp(14px, 2vw, 16px); font-weight: 700; color: var(--ks-text-2); margin-bottom: 6px; }
+.ks-empty-sub   { font-size: clamp(12px, 1.4vw, 13.5px); color: var(--ks-text-4); }
+.ks-loading     { text-align: center; padding: clamp(48px, 8vw, 72px) 24px; color: var(--ks-text-4); font-size: clamp(13px, 1.5vw, 14.5px); }
+
+/* ============================================================
+   ADMIN SIDEBAR RESPONSIVE
+   ============================================================ */
+
+.ks-admin-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 250;
+  backdrop-filter: blur(2px);
+}
+
+/* ============================================================
+   PROGRESS BARS
+   ============================================================ */
+
+.ks-progress-bg   { background: var(--ks-surface-3); border-radius: 100px; height: 6px; overflow: hidden; }
+.ks-progress-fill { height: 6px; border-radius: 100px; transition: width 0.7s ease; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.ks-hero {
+  border-radius: var(--ks-radius-lg);
+  padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 48px);
+  position: relative;
+  overflow: hidden;
+}
+.ks-hero-title { font-size: clamp(28px, 5vw, 52px); font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
+.ks-hero-sub   { font-size: clamp(14px, 2vw, 18px); line-height: 1.7; opacity: 0.85; }
+
+/* ============================================================
+   ORDER / FARMER CARDS (non-table layouts)
+   ============================================================ */
+
+.ks-order-card {
+  background: var(--ks-surface);
+  border: 1px solid var(--ks-border);
+  border-radius: var(--ks-radius-lg);
+  padding: clamp(16px, 2.5vw, 24px);
+  margin-bottom: clamp(12px, 2vw, 16px);
+  box-shadow: var(--ks-shadow-sm);
+}
+.ks-order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+
+/* ============================================================
+   MODAL / OVERLAY
+   ============================================================ */
+
+.ks-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.ks-modal { background: var(--ks-surface); border-radius: var(--ks-radius-xl); padding: clamp(20px, 4vw, 32px); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--ks-shadow-lg); }
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+.ks-flex     { display: flex; }
+.ks-flex-col { display: flex; flex-direction: column; }
+.ks-items-center { align-items: center; }
+.ks-justify-between { justify-content: space-between; }
+.ks-gap-sm { gap: var(--ks-gap-sm); }
+.ks-gap    { gap: var(--ks-gap); }
+.ks-gap-lg { gap: var(--ks-gap-lg); }
+.ks-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ks-nowrap { white-space: nowrap; }
+.ks-mono { font-family: var(--ks-mono); }
+.ks-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.ks-hidden { display: none !important; }
+.ks-w-full { width: 100%; }
+
+/* ============================================================
+   BREAKPOINT: ≤ 1280px (Large tablet / small laptop)
+   ============================================================ */
+
+@media (max-width: 1280px) {
+  .ks-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .ks-grid-6 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+   BREAKPOINT: ≤ 1024px (Tablet landscape)
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .ks-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .ks-hero-grid { grid-template-columns: 1fr !important; }
+  .ks-hide-lg { display: none !important; }
+  .ks-show-lg { display: block !important; }
+}
+
+/* ============================================================
+   BREAKPOINT: ≤ 768px (Tablet portrait / large mobile)
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .ks-grid-2 { grid-template-columns: 1fr; }
+  .ks-grid-3 { grid-template-columns: 1fr; }
+  .ks-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .ks-form-grid { grid-template-columns: 1fr; }
+
+  .ks-nav-links { display: none; }
+  .ks-nav-auth  { display: none; }
+  .ks-nav-hamburger { display: flex !important; align-items: center; }
+
+  /* Admin sidebar becomes overlay on mobile */
+  .ks-admin-sidebar-mobile-open .ks-admin-overlay { display: block; }
+
+  .ks-page-header { flex-direction: column; align-items: flex-start; }
+
+  /* Stack filter bar */
+  .ks-filter-bar { flex-direction: column; align-items: stretch; }
+  .ks-filter-bar .ks-input { width: 100%; }
+  .ks-filter-tabs-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+}
+
+/* ============================================================
+   BREAKPOINT: ≤ 640px (Mobile)
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .ks-grid-4 { grid-template-columns: 1fr; }
+  .ks-grid-6 { grid-template-columns: repeat(2, 1fr); }
+
+  /* Stat cards go 2-col on mobile */
+  .ks-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Form single column */
+  .ks-form-grid { grid-template-columns: 1fr; }
+
+  /* Modal full-screen-ish */
+  .ks-modal { max-height: 95vh; border-radius: var(--ks-radius-lg); }
+
+  /* Order/farmer cards stack */
+  .ks-order-header { flex-direction: column; align-items: flex-start; }
+
+  .ks-hide-sm { display: none !important; }
+  .ks-show-sm { display: block !important; }
+
+  /* Push page title smaller */
+  .ks-page-title { font-size: 18px; }
+
+  /* Hero adjustments */
+  .ks-hero-buttons { flex-direction: column; gap: 10px; }
+  .ks-hero-buttons .ks-btn { width: 100%; justify-content: center; }
+}
+
+/* ============================================================
+   BREAKPOINT: ≤ 480px (Small mobile)
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .ks-stats-grid { grid-template-columns: 1fr !important; }
+  .ks-grid-6     { grid-template-columns: 1fr; }
+
+  .ks-btn-group { flex-direction: column; width: 100%; }
+  .ks-btn-group .ks-btn { width: 100%; justify-content: center; }
+
+  .ks-hide-xs { display: none !important; }
+}
+
+/* ============================================================
+   ADMIN PANEL — Responsive overrides
+   ============================================================ */
+
+/* Sidebar collapses to overlay on ≤ 768px */
+@media (max-width: 768px) {
+  .ks-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.22s cubic-bezier(.4,0,.2,1), width 0.22s;
+    width: 260px !important;
+    z-index: 300;
+  }
+  .ks-sidebar.mobile-open { transform: translateX(0); box-shadow: var(--ks-shadow-lg); }
+  .ks-main  { margin-left: 0 !important; }
+  .ks-main.collapsed { margin-left: 0 !important; }
+  .ks-mobile-toggle { display: flex !important; }
+  .ks-admin-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .ks-admin-grid-2 { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 480px) {
+  .ks-admin-grid-4 { grid-template-columns: 1fr !important; }
+  .ks-admin-stat-value { font-size: 20px !important; }
+  .ks-body { padding: 16px !important; }
+}
+
+/* Admin topbar mobile toggle button */
+.ks-mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--ks-surface-3);
+  border: 1px solid var(--ks-border);
+  cursor: pointer;
+  font-size: 17px;
+  transition: background 0.13s;
+  flex-shrink: 0;
+}
+.ks-mobile-toggle:hover { background: var(--ks-surface-2); }
+
+/* ============================================================
+   FARMER / BUYER PAGES RESPONSIVE
+   ============================================================ */
+
+/* Product grid */
+.ks-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: var(--ks-gap);
+}
+
+/* My orders */
+.ks-orders-list { display: flex; flex-direction: column; gap: var(--ks-gap); }
+
+/* Place order form */
+.ks-place-order-wrap {
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  padding: clamp(16px, 3vw, 32px);
+}
+
+/* ============================================================
+   IMAGE UPLOADER RESPONSIVE
+   ============================================================ */
+
+.ks-uploader-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+@media (max-width: 400px) { .ks-uploader-grid { grid-template-columns: 1fr; } }
+
+.ks-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+@media (max-width: 400px) { .ks-preview-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ============================================================
+   NAVIGATION MOBILE MENU DRAWER
+   ============================================================ */
+
+.ks-mobile-menu {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--ks-green-950);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  overflow-y: auto;
+}
+.ks-mobile-menu.open { transform: translateX(0); }
+
+.ks-mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.ks-mobile-menu-links {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ks-mobile-menu-link {
+  padding: 13px 16px;
+  border-radius: var(--ks-radius-sm);
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+  border: 1px solid transparent;
+}
+.ks-mobile-menu-link:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.ks-mobile-menu-link.active { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.2); color: #D1FAE5; font-weight: 600; }
+
+.ks-mobile-menu-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ============================================================
+   PRINT (basic)
+   ============================================================ */
+
+@media print {
+  .ks-sidebar, .ks-nav-main, .ks-topbar, .ks-mobile-toggle { display: none !important; }
+  .ks-main { margin-left: 0 !important; }
+  .ks-body { padding: 0 !important; }
+  .ks-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+}
