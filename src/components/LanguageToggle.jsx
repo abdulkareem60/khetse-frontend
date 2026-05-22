@@ -1,107 +1,83 @@
 /**
- * LanguageToggle.jsx
- * Drop-in toggle button: EN ↔ اردو
- * Fits in navbar or any toolbar.
+ * src/components/LanguageToggle.jsx
+ *
+ * Segmented EN / اردو button.
+ * Props:
+ *   light       {boolean} — green-on-white variant (for white backgrounds)
+ *   translating {boolean} — show spinning indicator
+ *   size        {'sm'|'md'} — sm for compact toolbars
  */
 
 import { useLang } from '../context/LanguageContext';
 
-const css = `
-  .lt-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    border-radius: 100px;
-    overflow: hidden;
-    border: 1.5px solid rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.08);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: border-color 0.15s;
-    user-select: none;
-  }
-  .lt-btn:hover { border-color: rgba(255,255,255,0.50); }
-  .lt-seg {
-    padding: 5px 13px;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.55);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.15s;
-    line-height: 1.4;
-    white-space: nowrap;
-  }
-  .lt-seg.active {
-    background: #22C55E;
-    color: #052912;
-    border-radius: 100px;
-    margin: 2px;
-    padding: 3px 11px;
-  }
-  .lt-seg:not(.active):hover { color: rgba(255,255,255,0.85); }
-  .lt-loading {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: #4ADE80;
-    font-family: inherit;
-    padding: 4px 10px;
-    animation: lt-pulse 1.2s ease-in-out infinite;
-  }
-  @keyframes lt-pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+const CSS = `
+  .lt-wrap     { display:inline-flex; align-items:center; gap:8px; flex-shrink:0; }
+  .lt-pill     { display:inline-flex; align-items:center; border-radius:100px; overflow:hidden; cursor:pointer; user-select:none; transition:border-color .15s; }
+  .lt-pill-dk  { border:1.5px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); }
+  .lt-pill-dk:hover { border-color:rgba(255,255,255,0.45); }
+  .lt-pill-lt  { border:1.5px solid #CBD5E1; background:#F8FAFC; }
+  .lt-pill-lt:hover { border-color:#94A3B8; }
 
-  /* Dark theme variant (for buyer/public navbar) */
-  .lt-btn-light {
-    border-color: rgba(22,163,74,0.30);
-    background: rgba(22,163,74,0.06);
-  }
-  .lt-btn-light:hover { border-color: rgba(22,163,74,0.60); }
-  .lt-btn-light .lt-seg { color: #64748B; }
-  .lt-btn-light .lt-seg.active { background: #16A34A; color: #fff; }
-  .lt-btn-light .lt-seg:not(.active):hover { color: #0F172A; }
+  .lt-seg { padding:5px 13px; font-size:12.5px; font-weight:700; border:none; background:transparent; cursor:pointer; font-family:inherit; transition:all .15s; line-height:1.4; white-space:nowrap; }
+  .lt-seg-sm  { padding:3px 10px; font-size:11.5px; }
+  /* Dark theme */
+  .lt-seg-dk  { color:rgba(255,255,255,0.50); }
+  .lt-seg-dk:hover:not(.lt-active-dk) { color:rgba(255,255,255,0.85); }
+  .lt-active-dk { background:#22C55E; color:#052912; border-radius:100px; margin:2px; padding:3px 11px; }
+  .lt-active-dk.lt-seg-sm { padding:1px 9px; }
+  /* Light theme */
+  .lt-seg-lt  { color:#64748B; }
+  .lt-seg-lt:hover:not(.lt-active-lt) { color:#0F172A; }
+  .lt-active-lt { background:#16A34A; color:#fff; border-radius:100px; margin:2px; padding:3px 11px; }
+  .lt-active-lt.lt-seg-sm { padding:1px 9px; }
+
+  /* Urdu font */
+  .lt-ur { font-family:'Noto Nastaliq Urdu','Jameel Noori Nastaleeq',serif; }
+
+  /* Spinner */
+  .lt-spin { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:500; }
+  .lt-spin-dk { color:#4ADE80; }
+  .lt-spin-lt { color:#16A34A; }
+  .lt-spin-svg { animation:lt-rotate .8s linear infinite; }
+  @keyframes lt-rotate { to { transform:rotate(360deg); } }
 `;
 
-/**
- * @param {boolean} light   - Use light (green on white) styling instead of dark
- * @param {boolean} showLoading - Show a translating indicator
- */
-export default function LanguageToggle({ light = false, translating = false }) {
+export default function LanguageToggle({ light = false, translating = false, size = 'md' }) {
   const { lang, setLang } = useLang();
+  const theme  = light ? 'lt' : 'dk';
+  const segSm  = size === 'sm' ? ' lt-seg-sm' : '';
 
   return (
     <>
-      <style>{css}</style>
-      <div className={`lt-btn${light ? ' lt-btn-light' : ''}`} role="group" aria-label="Language selector">
-        <button
-          className={`lt-seg${lang === 'en' ? ' active' : ''}`}
-          onClick={() => setLang('en')}
-          aria-pressed={lang === 'en'}
-        >
-          EN
-        </button>
-        <button
-          className={`lt-seg${lang === 'ur' ? ' active' : ''}`}
-          onClick={() => setLang('ur')}
-          aria-pressed={lang === 'ur'}
-          style={{ fontFamily: "'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif" }}
-        >
-          اردو
-        </button>
+      <style>{CSS}</style>
+      <div className="lt-wrap">
+        <div className={`lt-pill lt-pill-${theme}`} role="group" aria-label="Language selector">
+          <button
+            className={`lt-seg lt-seg-${theme}${segSm}${lang === 'en' ? ` lt-active-${theme}` : ''}`}
+            onClick={() => setLang('en')}
+            aria-pressed={lang === 'en'}
+          >
+            EN
+          </button>
+          <button
+            className={`lt-seg lt-seg-${theme} lt-ur${segSm}${lang === 'ur' ? ` lt-active-${theme}` : ''}`}
+            onClick={() => setLang('ur')}
+            aria-pressed={lang === 'ur'}
+          >
+            اردو
+          </button>
+        </div>
+
+        {translating && (
+          <span className={`lt-spin lt-spin-${theme}`}>
+            <svg className="lt-spin-svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.8"
+                strokeDasharray="12 8" strokeLinecap="round"/>
+            </svg>
+            {light ? 'Translating…' : ''}
+          </span>
+        )}
       </div>
-      {translating && (
-        <span className="lt-loading">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <circle cx="5" cy="5" r="4" stroke="#4ADE80" strokeWidth="1.5" strokeDasharray="8 4">
-              <animateTransform attributeName="transform" type="rotate" from="0 5 5" to="360 5 5" dur=".8s" repeatCount="indefinite"/>
-            </circle>
-          </svg>
-          Translating…
-        </span>
-      )}
     </>
   );
 }

@@ -1,75 +1,97 @@
 /**
- * useTranslation.js
- * Custom hook — translates a list of product objects whenever
- * the language or the source data changes.
- *
- * Usage:
- *   const { items, translating } = useTranslatedProducts(rawProducts);
+ * src/hooks/useTranslation.js
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLang } from '../context/LanguageContext';
-import { translateProducts } from '../services/translationService';
+import {
+  translateDict,
+  translateProducts,
+  translateText,
+} from '../services/translationService';
 
-/**
- * Translates an array of products reactively.
- * @param {Object[]} products  Raw English products from the API
- * @returns {{ items: Object[], translating: boolean }}
- */
-export function useTranslatedProducts(products) {
+// ── Hook 1: UI string dictionary ─────────────────────────────────────────────
+export function useT(englishDict = {}) {
   const { lang } = useLang();
-  const [items,       setItems]       = useState(products);
+  const safe = englishDict || {};
+  const [t,           setT]           = useState(safe);
   const [translating, setTranslating] = useState(false);
-  const abortRef = useRef(false);   // Prevents stale async updates
+  const dictRef = useRef(safe);
+  dictRef.current = safe;
 
   useEffect(() => {
-    // Always reset to original first so UI isn't stale
-    setItems(products);
-
-    if (lang === 'en' || !products?.length) return;
+    const current = dictRef.current || {};
+    setT(current);
+    if (lang === 'en' || Object.keys(current).length === 0) return;
 
     let cancelled = false;
-    abortRef.current = false;
     setTranslating(true);
 
-    translateProducts(products, 'en', 'ur')
-      .then(translated => {
-        if (!cancelled) setItems(translated);
-      })
-      .catch(() => { /* silent fallback — original already set */ })
+    translateDict(current, 'en', 'ur')
+      .then((translated) => { if (!cancelled) setT(translated); })
+      .catch(() => {})
       .finally(() => { if (!cancelled) setTranslating(false); });
 
     return () => { cancelled = true; };
-  }, [products, lang]);
+  }, [lang]);
+
+  return { t, translating };
+}
+
+// ── Hook 2: product array ─────────────────────────────────────────────────────
+export function useTranslatedProducts(rawProducts) {
+  const { lang } = useLang();
+  const [items,       setItems]       = useState(rawProducts || []);
+  const [translating, setTranslating] = useState(false);
+
+  useEffect(() => {
+    const source = rawProducts || [];
+    setItems(source);
+    if (lang === 'en' || !source.length) return;
+
+    let cancelled = false;
+    setTranslating(true);
+
+    translateProducts(source, 'en', 'ur')
+      .then((translated) => { if (!cancelled) setItems(translated); })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setTranslating(false); });
+
+    return () => { cancelled = true; };
+  }, [rawProducts, lang]);
 
   return { items, translating };
 }
 
-/**
- * Translates a single string reactively.
- * @param {string} text
- * @returns {{ translated: string, translating: boolean }}
- */
+// ── Hook 3: single string ─────────────────────────────────────────────────────
 export function useTranslatedText(text) {
   const { lang } = useLang();
-  const [translated,  setTranslated]  = useState(text);
+  const [translated,  setTranslated]  = useState(text || '');
   const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
-    setTranslated(text);
+    setTranslated(text || '');
     if (lang === 'en' || !text) return;
 
     let cancelled = false;
     setTranslating(true);
 
-    import('../services/translationService').then(({ translateText }) =>
-      translateText(text, 'en', 'ur')
-    ).then(result => {
-      if (!cancelled) setTranslated(result);
-    }).finally(() => { if (!cancelled) setTranslating(false); });
+    translateText(text, 'en', 'ur')
+      .then((r) => { if (!cancelled) setTranslated(r); })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setTranslating(false); });
 
     return () => { cancelled = true; };
   }, [text, lang]);
 
   return { translated, translating };
+}
+
+// ── Utility: one-shot imperative translation ──────────────────────────────────
+export function useTranslateFn() {
+  const { lang } = useLang();
+  return useCallback(
+    (text) => translateText(text, 'en', lang),
+    [lang]
+  );
 }
